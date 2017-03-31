@@ -1,0 +1,63 @@
+@charset "UTF-8";
+@import 'var';
+@import "px2rem"; // 变量及其他配置
+
+///// reset //////////
+body,header,section,footer,h1,h2,h3,h4,h5,h6,div,p,ul,ol,li,form,button,input,select,textarea,img,span,a,dd{margin:0;padding:0;}
+body,button,input,select,textarea{font-family:@fontFamily;}
+button,input,select,textarea{font-size:100%;}
+header, footer, nav, article{display: block;}
+div,li,span,p,a{word-wrap: break-word;}
+html,body{height:100%;zoom:100%;
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;}
+ul,ol li{list-style:none;}
+img{border:0;display:block;}
+a{text-decoration:none;}
+
+//////自适应配置//////
+.media(960px);
+.media(800px);
+.media(720px);
+.media(640px);
+.media(600px);
+.media(540px);
+.media(480px);
+.media(414px);
+.media(400px);
+.media(375px);
+.media(360px);
+.media(320px);
+.media(240px);
+
+////// Vue style ///////////////
+[v-cloak]{display:none;}
+
+// 文字超出省略（默认1行）
+.textOverflowEllipsis(@lineNums:1){
+    text-overflow: ellipsis;overflow:hidden;display:-webkit-box;-webkit-line-clamp:@lineNums;-webkit-box-orient:vertical;
+}
+
+// 圆角（默认5px）
+.border-radius(@radius:5px){
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    -ms-border-radius: @radius;
+    -o-border-radius: @radius;
+    border-radius: @radius;
+}
+
+// img在div垂直方向的位置（默认居中）
+.imgVerticalCenter(@VerticalType:middle){
+    -webkit-vertical-align: @VerticalType;
+    -moz-vertical-align: @VerticalType;
+    -ms-vertical-align: @VerticalType;
+    -o-vertical-align: @VerticalType;
+    vertical-align: @VerticalType;
+}
+
+// 伪类清除浮动
+.clearFloat(@content:' '){
+    content:@content;clear: both;height: 0;width: 0;visibility: hidden;overflow: hidden;display: block;
+}

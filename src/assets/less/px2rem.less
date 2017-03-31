@@ -1,0 +1,12 @@
+// px to rem
+@view-base: 375;                            // 设计视图宽度
+@font-size-num: 14;                         // 基础字体大小
+@rem: 1rem * @font-size-num;                // rem
+@px: 1px * @font-size-num;                  // px
+
+// 媒体查询（默认640px）
+.media(@maxWidth:640px) {
+    @media only screen and (max-width:@maxWidth),only screen and (max-device-width:@maxWidth) {
+        html,body {font-size: round((@maxWidth / @view-base),2) * @font-size-num;}
+    }
+}

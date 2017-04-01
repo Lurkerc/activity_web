@@ -27,6 +27,8 @@
 </template>
 
 <script>
+    var qs = require('qs');
+
     import Banner from './components/Banner';
     import InputGroup from './components/InputGroup';
     import { Loading, ButtonTab, ButtonTabItem, PopupPicker, Group, XButton, Toast } from 'vux';
@@ -42,24 +44,18 @@
                 },
                 viewMore: 0,
                 popupShow: false,
-                viewAct: ['3'],
-                output: {
-                    id: 1,
-                    sign_title: '活动名称', // 活动名称
-                    start_time: '2017-04-01 08:00', // 活动时间
-                    sign_addr: '详细的活动地址', // 活动地点
-                    end_time: '2017-04-01 08:00', // 活动报名截止时间
-                    sign_img: 'http://www.htmlsucai.com/demo/20161113/%e6%89%8b%e6%9c%ba%e5%be%ae%e4%bf%a1%e5%91%a8%e5%b9%b4%e5%ba%86%e6%8a%a5%e5%90%8d%e6%b4%bb%e5%8a%a8%e9%a1%b5%e9%9d%a2%e6%a8%a1%e6%9d%bf%e4%b8%8b%e8%bd%bd/images/banner.jpg', // 活动图片
-                    sign_text: '<p>这是活动描述信息</p>', // 活动描述
-                    sign_input: ['name', 'phone', 'age'] // 选中的输入属性
+                viewAct: ['3'], // 选中的活动
+                output: { // 渲染数据
+                    id: 0,
+                    sign_title: '', // 活动名称
+                    start_time: '', // 活动时间
+                    sign_addr: '', // 活动地点
+                    end_time: '', // 活动报名截止时间
+                    sign_img: '', // 活动图片
+                    sign_text: '', // 活动描述
+                    sign_input: [] // 选中的输入属性
                 },
-                moreAct: [[ // 活动列表
-                    {name:'活动一',value:1},
-                    {name:'活动二',value:2},
-                    {name:'活动三',value:3},
-                    {name:'活动四',value:4},
-                    {name:'活动五',value:5},
-                ]],
+                moreAct: [],
                 input:{}, // 提交的数据
                 btnLoading: false, // 提交按钮加载状态
                 toastOpt: {
@@ -73,13 +69,23 @@
             getData (aid) {
                 var _this = this;
                 // 进行请求数据
-                console.log('初始化数据' + (aid || 0));
                 if(aid){
                     oldAid = aid;
                 }
-                setTimeout(function(){
-                    _this.loading.state = false; // 请求成功取消loading
-                },500)
+                // 提交数据
+                _this.$http.get('/' + (aid ? '&id=' + aid : ''))
+                .then(function(response){
+                    _this.moreAct[0] = response.data.lists;
+                    _this.output = response.data.output;
+                    _this.viewAct[0] = response.data.output.id;
+                    oldAid = response.data.output.id;
+                    setTimeout(function(){
+                        _this.loading.state = false; // 请求成功取消loading
+                    },1000);
+                })
+                .catch(function(error){
+                    _this.loading.text = '加载失败';
+                })
             },
             viewActivity (type) {
                 if(type == 0){
@@ -94,11 +100,38 @@
                 if(_this.btnLoading){
                     return;
                 }
+                // 资料填写检测
+                if(isEmptyObject(_this.input)){
+                    _this.toastOpt.type = 'warn';
+                    _this.toastOpt.text = '资料未填写';
+                    _this.toastOpt.state = true;
+                    return;
+                }
+                // 按钮加载状态
                 _this.btnLoading = true;
-                _this.toastOpt.state = true;
-                console.log(_this.input);
+                // 提交数据
+                _this.$http.post('',qs.stringify({input:_this.input,sid:_this.output.id})).then(function(response){
+                    // 成功
+                    switch (response.data.status) {
+                        case '1':
+                            _this.toastOpt.type = 'success';
+                            break;
+                        default:
+                            _this.toastOpt.type = 'warn';
+                            break;
+                    }
+
+                    _this.toastOpt.text = response.data.info;
+                    _this.toastOpt.state = true;
+                })
+                .catch(function(error){
+                    // 失败
+                    _this.toastOpt.type = 'text';
+                    _this.toastOpt.text = '请检查网络是否可用';
+                    _this.toastOpt.state = true;
+                });
                 setTimeout(function(){
-                    _this.btnLoading = false
+                    _this.btnLoading = false;
                 },1000);
             }
         },
@@ -124,6 +157,17 @@
             this.getData()
         }
     }
+
+    /**
+     * 检测对象是否为空
+     */
+    function isEmptyObject(e) {  
+        var t;  
+        for (t in e){
+            return !1;
+        }
+        return !0
+    }  
 </script>
 
 <style lang="less">

@@ -2,12 +2,14 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import FastClick from 'fastclick';
+// import Vuex from 'vuex';
 // import VueRouter from 'vue-router'
 import App from './App';
 import { AjaxPlugin } from 'vux';
 // import Home from './components/HelloFromVux'
 
 // Vue.use(VueRouter)
+// Vue.use(Vuex);
 Vue.use(AjaxPlugin);
 
 // const routes = [{
@@ -34,3 +36,5 @@ new Vue({
     components: { App },
     template: '<App/>'
 });
+
+var bus = new Vue();
